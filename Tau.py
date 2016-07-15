@@ -2,6 +2,9 @@
 
 '''
 Thomson Optical Depth
+
+Author:
+Tim Wilson
 '''
 
 from __future__ import division
