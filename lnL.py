@@ -1,8 +1,7 @@
 import numpy as np
 import Tau
 
-np.load('c:/Users/Timot/Downloads/ionHist.npz')
-n = np.load('c:/Users/Timot/Downloads/ionHist.npz')
+n = np.load('/Users/Timothyx5/BerkeleyResearchTau/ionHist.npz')
 
 tau_adrian = np.array([0.066])
 tau_adrian_error = np.array([0.012])
