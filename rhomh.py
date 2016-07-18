@@ -106,6 +106,8 @@ for k in range(nwalkers):
 
 master_chain = np.array(master_chain)
 
+np.savez('master_chain', master_chain=master_chain)
+np.savez('walker_chain', walker_chain=walker_chain)
 
 ## Plotting a histogram of one dimesion ##
 plot1 = False
