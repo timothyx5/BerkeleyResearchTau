@@ -11,8 +11,7 @@ import matplotlib.pyplot as plt
 import Tau
 import lnL
 
-np.load('c:/Users/Timot/Downloads/ionHist.npz')
-n = np.load('c:/Users/Timot/Downloads/ionHist.npz')
+n = np.load('/Users/Timothyx5/BerkeleyResearchTau/ionHist.npz')
 
 class Metro_Hast(object):
 
