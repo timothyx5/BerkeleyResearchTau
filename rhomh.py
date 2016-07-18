@@ -61,9 +61,9 @@ class Metro_Hast(object):
 dim				= 4												# Number of dimensions of parameter space
 
 param_bounds	= [	[-0.1, 0.1] ,
-					[-32.6, 32.6],
-					[0.001, 25.9],
-					[-56.8, 56.8] ]									# Parameter Space Bounds
+			[-32.6, 32.6],
+			[0.001, 25.9],
+			[-56.8, 56.8] ]									# Parameter Space Bounds
 
 def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	return -1./2*np.sum(((lnL.y - lnL.m(ap,bp,cp,dp))/lnL.sigma)**2) # Underlying distribution
@@ -86,7 +86,7 @@ variables = {'dim':dim,'param_bounds':param_bounds,'f':f,'prop':prop,'nwalkers':
 ## Initialize the class!
 MH = Metro_Hast(variables)
 
-N = 5000
+N = 100000
 for j in range(N):
 	# Propose!
 	proposals = MH.propose()
@@ -108,98 +108,3 @@ master_chain = np.array(master_chain)
 
 np.savez('master_chain', master_chain=master_chain)
 np.savez('walker_chain', walker_chain=walker_chain)
-
-## Plotting a histogram of one dimesion ##
-plot1 = False
-if plot1 == True:
-
-	# Choose 1 dimension to plot
-	fig = plt.figure()
-	ax = fig.add_subplot(111)
-	ax.hist(master_chain.T[0], bins=25, color='g', histtype='step',alpha=0.25,range=(-10,10))
-
-# Choose 1 dimension to vary, and hold all others constant
-plot_dim = 0
-
-# Initialize x vector, then iterate over 
-x_array = []
-for k in np.linspace(param_bounds[plot_dim][0],param_bounds[plot_dim][1],500):
-	x_vec = np.zeros(dim)
-	x_vec[plot_dim] = k*1
-	x_array.append(x_vec)
-
-x_array = np.array(x_array)
-
-plot2 = False
-if plot2 == True:
-	## Plotting the Underlying f function across one dimension ##
-
-	# Evaluate the function f over vector x_array
-	f_array = f(x_array)
-
-	# Plot
-	fig = plt.figure()
-	ax = fig.add_subplot(111)
-	ax.plot(x_array.T[plot_dim],f_array,color='b',linewidth=2,alpha=0.5)
-
-
-# Initialize x vector, then iterate over 
-x_array = []
-for k in np.linspace(param_bounds[plot_dim][0],param_bounds[plot_dim][1],500):
-	x_vec = np.zeros(dim)
-	x_vec[plot_dim] = k*1
-	x_array.append(x_vec)
-
-#x_array = np.array(x_array)
-#f_array = f(x_array)
-
-plot3 = False
-if plot3 == True:
-	## Plotting the Underlying f function AND the histogram of the master_chain across one dimension ##
-
-	# Get chain samples of conditional distribution at theta=0
-	select = np.where( (np.abs(master_chain.T[1]-0)<1))# & (np.abs(master_chain.T[1]-0)<1) )
-	conditional_chain = master_chain[select]
-
-	# Initialize subplot
-	fig = plt.figure()
-	ax = fig.add_subplot(111)
-	# Plot histogram
-	hist_data = ax.hist(conditional_chain.T[plot_dim],bins=50,range=param_bounds[plot_dim],color='r',histtype='step')
-	# Get histogram maximum
-	hist_max = np.max(hist_data[0])
-	# plot function f, normalized by hist_max
-	ax.plot(x_array.T[plot_dim],f_array*(hist_max/np.max(f_array)),color='b',linewidth=2,alpha=0.5)
-
-
-plot4 = False
-if plot4 == True:
-	## Plotting 2 parameters ##
-
-	# Make meshgrid
-	XX,YY = np.meshgrid(np.linspace(param_bounds[0][0],param_bounds[0][1],25),
-					np.linspace(param_bounds[1][0],param_bounds[1][1],25))
-
-	# Reshape from matrix to row vector
-	Z = np.vstack([XX.ravel(),YY.ravel()]).T
-
-	# Evaluate f at meshgrid points
-	f_array = f(Z)
-
-	# Get Kernel Density Estimate of samples
-	kde = stats.gaussian_kde(master_chain.T)
-	chain_2dhist = kde(Z.T).reshape(25,25)
-
-	# Initialize plot
-	fig = plt.figure()
-	ax = fig.add_subplot(111)
-
-	# plot heat map of function f, which has been reshaped back to matrix
-	ax.imshow(f_array.reshape(25,25), extent=[-10,10,-10,10],origin='lower',cmap='magma')
-
-	# get contours from data
-	ax.contour(chain_2dhist, extent=[-10,10,-10,10])
-
-#plt.scatter(master_chain.T[0], master_chain.T[1], alpha=0.5, s=1)
-
-#plt.show()
