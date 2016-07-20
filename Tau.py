@@ -103,11 +103,11 @@ def get_Q(redshift,N=2001,zlow=0,zhigh=20):
 	index = np.where(z ==  redshift)
 	return Q[index]
 
-def f_e(z):
+def f_e(z, Y_p=0.2453, X_p=0.75):
 	#f_e is not f_esc, it is free electrons per hydrogen nucleus, 1+ y/2x for z <= 4, and 1+ y/4x else.
 	low_z = z <= 4
-	electron_frac = np.ones(len(z))*1.083
-	electron_frac[low_z] = 1.167
+	electron_frac = np.ones(len(z))*(1 + Y_p/(4*X_p))
+	electron_frac[low_z] = 1 + Y_p/(2*X_p)
 	return electron_frac
 
 def dtau(z, Q):
