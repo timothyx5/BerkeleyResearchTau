@@ -3,11 +3,11 @@ Metropolis-Hastings Algorithm
 """
 
 from __future__ import division
+import sys
 import numpy as np
 import numpy.random as rd
 import scipy.stats as stats
 import numpy.linalg as la
-import matplotlib.pyplot as plt
 import Tau
 import lnL
 
@@ -94,7 +94,8 @@ for j in range(N):
 	# Accept / Reject
 	MH.accept_reject(proposals)
 
-	if j % 100 == 0: print j
+	if j % 100 == 0: print j 
+        sys.stdout.flush()
 
 
 chain = np.array([ np.array(MH.walker_chain[i]) for i in range(nwalkers) ])

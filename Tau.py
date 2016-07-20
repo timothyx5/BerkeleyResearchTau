@@ -11,7 +11,6 @@ from __future__ import division
 from scipy import integrate
 from astropy.cosmology import Planck15 as cosmo
 import numpy as np
-import matplotlib.pyplot as plt 
 
 ###################################################
 ##########Constants and conversions################
@@ -136,45 +135,5 @@ def calc_tau_Q_rho(N=2001,zhigh=20,zlow=0,ap=0.01376, bp=3.26, cp=2.59, dp=5.68)
 
 tau, Q, z, Q_adrian, rho_uv, rho_ir = calc_tau_Q_rho()
 
-###################################################
-################## Plotting #######################
-###################################################
 
-if __name__ == "__main__":
 
-	plt.subplot(221)
-	plt.semilogy(z, rho(z), label='Planck Results', color='red')
-	plt.semilogy(z, rho(z, 0.01306, 3.66, 2.28, 5.29), label=r'Forced Match to WMAP  $\tau$', color='orange')
-	plt.errorbar(uv_z, uv_data, yerr=uv_data_err, fmt='o', color='blue')
-	plt.errorbar(ir_z, ir_data, yerr=ir_data_err, fmt='o', color='red')
-	plt.axis([0,15,10**-3.5,10**-0.5])
-	plt.legend(frameon=0, loc='lower right')
-	plt.title(r'log$_{10}$(SFR density) vs. z',fontsize=20)
-	plt.grid(True)
-	plt.xlabel('Redshift z',fontsize=20)
-	plt.ylabel(r'log$_{10}$ $\rho_{SFR}$',fontsize=20)
-
-	plt.subplot(222)
-	plt.plot(z, 1 - Q)
-	plt.axis([0, 15, -0.1, 1])
-	plt.title('Neutral Hydrogen vs. z',fontsize=20)
-	plt.grid(True)
-	plt.xlabel('Redshift',fontsize=20)
-	plt.ylabel(r'Q$_{HI}$',fontsize=20)
-
-	plt.subplot(223)
-	plt.plot(z, Q)
-	plt.axis([0, 15, 0, 1.1])
-	plt.title('Ionized Hydrogen vs. z',fontsize=20)
-	plt.grid(True)
-	plt.xlabel('Redshift',fontsize=20)
-	plt.ylabel(r'Q$_{HII}$',fontsize=20)
-
-	plt.subplot(224)
-	plt.plot(z[0:-1], tau) # z[0:-1] to match the array dimensions
-	plt.title('Optical Depth vs. z',fontsize=20)
-	plt.grid(True)
-	plt.xlabel('Redshift',fontsize=20)
-	plt.ylabel(r'Thomson Optical Depth $\tau$',fontsize=20)
-
-	plt.show()
