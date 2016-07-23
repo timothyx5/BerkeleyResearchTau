@@ -60,15 +60,15 @@ class Metro_Hast(object):
 
 dim				= 4												# Number of dimensions of parameter space
 
-param_bounds	= [	[-0.1, 0.1] ,
-			[-32.6, 32.6],
-			[0.001, 25.9],
-			[-56.8, 56.8] ]									# Parameter Space Bounds
+param_bounds	= [	[-0.5, 0.5] ,
+			[-16, 16],
+			[0.001, 12.5],
+			[-25, 25] ]									# Parameter Space Bounds
 
 def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	return -1./2*np.sum(((lnL.y - lnL.m(ap,bp,cp,dp))/lnL.sigma)**2) # Underlying distribution
 
-sigma_prop 		= np.array([0.0001,0.03,0.03,0.05])
+sigma_prop 		= np.array([0.001,0.3,0.3,0.5])
 cov_prop		= np.eye(dim)*sigma_prop
 mean_prop		= np.zeros(dim)
 prop 			= lambda num: stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,size=num).reshape(dim,num).T	# Proposal distribution
@@ -76,7 +76,7 @@ prop 			= lambda num: stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,
 
 nwalkers		= 5 												# Number of walkers
 #walker_pos		= np.array([stats.uniform.rvs(param_bounds[i][0],param_bounds[i][1]-param_bounds[i][0],nwalkers) for i in range(dim)]).T			# (leftstart, length, number)
-walker_pos 	    = np.array([np.array([0.01376, 3.26, 2.59, 5.68])*i for i in np.random.randint(0,50,nwalkers)/200])
+walker_pos 	    = np.array([np.array([0.01376, 3.26, 2.59, 5.68])*i for i in np.random.randint(0,50,nwalkers)/200.0])
 walker_chain	= [ [] for i in range(nwalkers) ]
 
 # Stuff the variables together
@@ -109,3 +109,4 @@ master_chain = np.array(master_chain)
 
 np.savez(sys.argv[1], master_chain=master_chain)
 np.savez(sys.argv[2], walker_chain=walker_chain)
+np.savez(sys.argv[3], chain=chain)
