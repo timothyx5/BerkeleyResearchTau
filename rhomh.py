@@ -66,7 +66,7 @@ param_bounds	= [	[-0.25, 0.25] ,
 			[-12.5, 12.5] ]									# Parameter Space Bounds
 
 def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
-	return -1./2*np.sum(((lnL.y - lnL.m(ap,bp,cp,dp))/lnL.sigma)**2) # Underlying distribution
+	return -0.5*np.sum(((lnL.y - lnL.m(ap,bp,cp,dp))/lnL.sigma)**2) # Underlying distribution
 
 sigma_prop 		= np.array([0.0005,0.015,0.01,0.025])
 cov_prop		= np.eye(dim)*sigma_prop
