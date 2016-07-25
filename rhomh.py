@@ -60,15 +60,15 @@ class Metro_Hast(object):
 
 dim				= 4												# Number of dimensions of parameter space
 
-param_bounds	= [	[-0.5, 0.5] ,
-			[-16, 16],
-			[0.001, 12.5],
-			[-25, 25] ]									# Parameter Space Bounds
+param_bounds	= [	[-0.25, 0.25] ,
+			[-8, 8],
+			[0.001, 6.25],
+			[-12.5, 12.5] ]									# Parameter Space Bounds
 
 def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	return -1./2*np.sum(((lnL.y - lnL.m(ap,bp,cp,dp))/lnL.sigma)**2) # Underlying distribution
 
-sigma_prop 		= np.array([0.001,0.3,0.3,0.5])
+sigma_prop 		= np.array([0.01,0.3,0.3,0.5])
 cov_prop		= np.eye(dim)*sigma_prop
 mean_prop		= np.zeros(dim)
 prop 			= lambda num: stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,size=num).reshape(dim,num).T	# Proposal distribution
@@ -86,7 +86,7 @@ variables = {'dim':dim,'param_bounds':param_bounds,'f':f,'prop':prop,'nwalkers':
 ## Initialize the class!
 MH = Metro_Hast(variables)
 
-N = 20000
+N = 100
 for j in range(N):
 	# Propose!
 	proposals = MH.propose()
@@ -94,7 +94,7 @@ for j in range(N):
 	# Accept / Reject
 	MH.accept_reject(proposals)
 
-	if j % 100 == 0: print j 
+	if j % 10 == 0: print j 
         sys.stdout.flush()
 
 
