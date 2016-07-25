@@ -62,7 +62,7 @@ dim				= 4												# Number of dimensions of parameter space
 
 param_bounds	= [	[-0.25, 0.25] ,
 			[-8, 8],
-			[0.001, 6.25],
+			[-6.25, 6.25],
 			[-12.5, 12.5] ]									# Parameter Space Bounds
 
 def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
