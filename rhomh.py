@@ -68,7 +68,7 @@ param_bounds	= [	[-0.25, 0.25] ,
 def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	return -1./2*np.sum(((lnL.y - lnL.m(ap,bp,cp,dp))/lnL.sigma)**2) # Underlying distribution
 
-sigma_prop 		= np.array([0.005,0.3,0.3,0.5])
+sigma_prop 		= np.array([0.0005,0.015,0.01,0.025])
 cov_prop		= np.eye(dim)*sigma_prop
 mean_prop		= np.zeros(dim)
 prop 			= lambda num: stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,size=num).reshape(dim,num).T	# Proposal distribution
