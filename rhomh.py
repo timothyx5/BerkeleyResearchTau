@@ -75,8 +75,7 @@ prop 			= lambda num: stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,
 
 
 nwalkers		= 5 												# Number of walkers
-#walker_pos		= np.array([stats.uniform.rvs(param_bounds[i][0],param_bounds[i][1]-param_bounds[i][0],nwalkers) for i in range(dim)]).T			# (leftstart, length, number)
-walker_pos 	    = np.array([np.array([0.01376, 3.26, 2.59, 5.68])*i for i in np.random.randint(0,50,nwalkers)/200.0])
+walker_pos 	    = np.array([np.array([0.01376, 3.26, 2.59, 5.68])*i for i in np.random.randint(1,50,nwalkers)/200.0])
 walker_chain	= [ [] for i in range(nwalkers) ]
 
 # Stuff the variables together
