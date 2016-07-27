@@ -17,7 +17,7 @@ import numpy as np
 
 MPC3 = (3.1e24)**3 #conversion factor from Megaparsec cubed to cm cubed
 ALPHA_B = 2.59e-13 #recombination coefficient at T=10^4 in units of cubic cm per second, (Osterbrock & Ferland 2006).
-NH = 1.905e-7 #current hydrogen density in cm^-3, (Shull et al. 2012)
+NH = 1.881e-7 #current hydrogen density in cm^-3
 GYR_S = 3.16e16 # to convert Gyr to seconds
 KM_PER_MPC = 3.1e19 #for converting Hubble parameter to inverse time only
 c = 3.0e10 #c is the speed of light in cm/s
