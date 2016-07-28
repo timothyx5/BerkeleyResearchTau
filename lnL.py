@@ -6,7 +6,7 @@ n = np.load('/Users/TJW/BerkeleyResearchTau/ionHist.npz')
 tau_adrian = np.array([0.066])
 tau_adrian_error = np.array([0.012])
 
-x_e_error = n['upperCurve95'] - n['nf0']
+x_HI_error = n['upperCurve95'] - n['nf0']
 
 rho_uv_y_error = [ 0.06, 0.05, 0.12, 0.22, 0.22, 0.09, 0.18, 0.12, 0.10, 0.10, 
 				   0.09, 0.09, 0.12, 0.29, 0.21, 0.27, 0.08, 0.12, 0.09, 0.10,
