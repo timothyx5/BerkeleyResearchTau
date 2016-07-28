@@ -60,22 +60,22 @@ class Metro_Hast(object):
 
 dim				= 4												# Number of dimensions of parameter space
 
-param_bounds	= [	[-0.25, 0.25] ,
-			[-8, 8],
-			[-6.25, 6.25],
-			[-12.5, 12.5] ]									# Parameter Space Bounds
+param_bounds	= [ [ 0.0137 - 0.001*10, 0.0137 + 0.001*10]
+		    [ 3.26 - 0.21*10, 3.26 + 0.21*10]
+		    [ 2.59 - 0.14*10, 2.59 + 0.14*10]
+		    [ 5.68 - 0.19*10, 5.68 + 0.19*10] ]								# Parameter Space Bounds
 
 def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	return -0.5*np.sum(((lnL.y - lnL.m(ap,bp,cp,dp))/lnL.sigma)**2) # Underlying distribution
 
-sigma_prop 		= np.array([0.0005,0.015,0.01,0.025])
+sigma_prop 		= np.array([0.0001,0.03,0.02,0.05])
 cov_prop		= np.eye(dim)*sigma_prop
 mean_prop		= np.zeros(dim)
 prop 			= lambda num: stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,size=num).reshape(dim,num).T	# Proposal distribution
 
 
 nwalkers		= 5 												# Number of walkers
-walker_pos 	    = np.array([np.array([0.01376, 3.26, 2.59, 5.68])*i for i in np.random.randint(1,50,nwalkers)/200.0])
+walker_pos 	    = np.array([np.array([0.01376, 3.26, 2.59, 5.68])*i for i in np.random.randint(75,125,nwalkers)/100.0])
 walker_chain	= [ [] for i in range(nwalkers) ]
 
 # Stuff the variables together
@@ -85,7 +85,7 @@ variables = {'dim':dim,'param_bounds':param_bounds,'f':f,'prop':prop,'nwalkers':
 ## Initialize the class!
 MH = Metro_Hast(variables)
 
-N = 15000
+N = 5000
 for j in range(N):
 	# Propose!
 	proposals = MH.propose()
