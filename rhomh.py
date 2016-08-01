@@ -60,10 +60,10 @@ class Metro_Hast(object):
 
 dim				= 4												# Number of dimensions of parameter space
 
-param_bounds	= [ [ 0, 1],
-		    [ 0, 32],
-		    [ 0.001, 25],
-		    [ 0, 56] ]								# Parameter Space Bounds
+param_bounds	= [ [ 1.85e-3, 4.74e-2 ],
+		    [ 0.58, 10.72],
+		    [ 0.595, 7.98],
+		    [ 1.89, 15.16] ]								# Parameter Space Bounds
 
 def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	return -0.5*np.sum(((lnL.y - lnL.m(ap,bp,cp,dp))/lnL.sigma)**2) # Underlying distribution
@@ -107,5 +107,4 @@ for k in range(nwalkers):
 master_chain = np.array(master_chain)
 
 np.savez(sys.argv[1], master_chain=master_chain)
-np.savez(sys.argv[2], walker_chain=walker_chain)
-np.savez(sys.argv[3], chain=chain)
+np.savez(sys.argv[2], chain=chain)
