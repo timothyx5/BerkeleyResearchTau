@@ -27,4 +27,4 @@ sigma = np.concatenate((x_HI_error, tau_adrian_error, rho_SFR_error))
 
 def m(ap,bp,cp,dp):
 	tau, Q, z, Q_adrian, rho_uv, rho_ir = Tau.calc_tau_Q_rho(ap=ap,bp=bp,cp=cp,dp=dp)
-	return np.concatenate((Q, [tau[0]], np.log10(rho_uv), np.log10(rho_ir)))
+	return np.concatenate((Q_adrian, [tau[0]], np.log10(rho_uv), np.log10(rho_ir)))
