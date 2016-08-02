@@ -1,5 +1,7 @@
 """
 Metropolis-Hastings Algorithm
+
+Authors: Nicholas Kern and Tim Wilson
 """
 
 from __future__ import division
