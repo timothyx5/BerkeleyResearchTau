@@ -10,6 +10,7 @@ from __future__ import division
 from scipy import integrate
 from astropy.cosmology import Planck15 as cosmo
 import numpy as np
+import matplotlib.pyplot as plt 
 
 ###################################################
 ##########Constants and conversions################
@@ -29,7 +30,7 @@ SIGMA_T = 6.65e-25 #SIGMA_T is the Thomson cross section (astrobaki).
 
 #UV data from MD14
 uv_z	= [0.055,0.3,0.5,0.7,1.0,0.05,0.125,0.3,0.5,0.7,0.9,1.1,1.45,2.1,3.0,4.0,1.25,1.75,2.23,
-		   2.3,3.1,3.8,4.9,5.9,7.0,7.9,7.0,8.0]  #Averaged for values in a range
+		   2.3,3.1,3.8,4.9,5.9,7.0,7.9,7.0,8.]  #Averaged for values in a range
 uv_data = [10**-1.82,10**-1.50,10**-1.39,10**-1.20,10**-1.25,10**-1.77,10**-1.75,10**-1.55,
 		   10**-1.44,10**-1.24,10**-0.99,10**-0.94,10**-0.95,10**-0.75,10**-1.04,10**-1.69,
 		   10**-1.02,10**-0.75,10**-0.87,10**-0.75,10**-0.97,10**-1.29,10**-1.42,10**-1.65,
@@ -38,12 +39,12 @@ uv_err_up = [ uv_data[0]*10**0.09,uv_data[1]*10**0.05,uv_data[2]*10**0.15,uv_dat
 			  uv_data[6]*10**0.18,uv_data[7]*10**0.12,uv_data[8]*10**0.10,uv_data[9]*10**0.10,uv_data[10]*10**0.09,uv_data[11]*10**0.09, 
 			  uv_data[12]*10**0.15,uv_data[13]*10**0.49,uv_data[14]*10**0.26,uv_data[15]*10**0.22,uv_data[16]*10**0.08,uv_data[17]*10**0.12,
 			  uv_data[18]*10**0.09,uv_data[19]*10**0.09,uv_data[20]*10**0.11,uv_data[21]*10**0.05,uv_data[22]*10**0.06,uv_data[23]*10**0.08, 
-			  uv_data[24]*10**0.10,uv_data[25]*10**0.11,uv_data[26]*10**0.10,uv_data[27]*10**0.14 ]
+			  uv_data[24]*10**0.10,uv_data[25]*10**0.11,uv_data[26]*10**0.10,uv_data[27]*10**0.14]
 uv_err_low = [ uv_data[0]*10**-0.02,uv_data[1]*10**-0.05,uv_data[2]*10**-0.08,uv_data[3]*10**-0.13,uv_data[4]*10**-0.13,uv_data[5]*10**-0.09,
 			   uv_data[6]*10**-0.18,uv_data[7]*10**-0.12,uv_data[8]*10**-0.10,uv_data[9]*10**-0.10,uv_data[10]*10**-0.08,uv_data[11]*10**-0.09, 
 			   uv_data[12]*10**-0.08,uv_data[13]*10**-0.09,uv_data[14]*10**-0.15,uv_data[15]*10**-0.32,uv_data[16]*10**-0.08,uv_data[17]*10**-0.12,
 			   uv_data[18]*10**-0.09,uv_data[19]*10**-0.11,uv_data[20]*10**-0.15,uv_data[21]*10**-0.05,uv_data[22]*10**-0.06,uv_data[23]*10**-0.08, 
-			   uv_data[24]*10**-0.10,uv_data[25]*10**-0.11,uv_data[26]*10**-0.11,uv_data[27]*10**-0.14 ]
+			   uv_data[24]*10**-0.10,uv_data[25]*10**-0.11,uv_data[26]*10**-0.11,uv_data[27]*10**-0.14]
 
 #IR data from MD14
 ir_z	= [0.03,0.03,0.55,0.85,1.15,1.55,2.05,0.55,0.85,1.15,1.55,2.05,0.15,0.38,0.53,0.70,0.90,1.10,1.45,
@@ -143,6 +144,10 @@ def calc_tau_Q_rho(N=2001,zhigh=20,zlow=0,ap=0.01376, bp=3.26, cp=2.59, dp=5.68)
 	rho_ir = rho(np.array(ir_z),ap=ap,bp=bp,cp=cp,dp=dp)
 
 	return tau, Q, z, Q_adrian, rho_uv, rho_ir
+
+def calc_x_HI(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
+	Q, z = calc_Q(N=2001,zhigh=20,zlow=0,ap=ap,bp=bp,cp=cp,dp=dp)
+	return np.ones(len(Q)) - Q
 
 tau, Q, z, Q_adrian, rho_uv, rho_ir = calc_tau_Q_rho()
 
