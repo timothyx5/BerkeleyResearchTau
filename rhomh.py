@@ -62,10 +62,11 @@ class Metro_Hast(object):
 
 dim				= 4												# Number of dimensions of parameter space
 
-param_bounds	= [ [ 3.7e-3, 2.37e-2 ],
-		    [ 1.16, 5.26],
-		    [ 1.19, 3.99],
-		    [ 3.78, 7.58] ]								# Parameter Space Bounds
+
+param_bounds	= [ [ 0.0137 - 0.001*20, 0.0137 + 0.001*20],
+		    	    [ 3.26 - 0.21*20, 3.26 + 0.21*20],
+		    		[ 2.59 - 0.14*20, 2.59 + 0.14*20],
+		    		[ 5.68 - 0.19*20, 5.68 + 0.19*20] ]										# Parameter Space Bounds
 
 def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	return -0.5*np.sum(((lnL.y - lnL.m(ap,bp,cp,dp))/lnL.sigma)**2) # Underlying distribution
