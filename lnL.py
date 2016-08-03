@@ -6,6 +6,8 @@ n = np.load('/Users/TJW/BerkeleyResearchTau/ionHist.npz')
 tau_adrian = np.array([0.066])
 tau_adrian_error = np.array([0.012])
 
+tau_model =  np.array([0.060009722131642948])
+
 x_HI_error = np.zeros(len(n['nf0']))
 for i in range(len(n['nf0'])):
 	x_HI_error[i] = 0.5*np.mean(n['upperCurve95'][i] - n['nf0'][i])
@@ -29,4 +31,4 @@ sigma = np.concatenate((x_HI_error, tau_adrian_error, rho_SFR_error))
 
 def m(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	tau, Q, z, Q_adrian, rho_uv, rho_ir = Tau.calc_tau_Q_rho(ap=ap,bp=bp,cp=cp,dp=dp)
-	return np.concatenate((Tau.calc_x_HI(ap,bp,cp,dp)[700:1410][::10], [tau[0]], np.log10(rho_uv), np.log10(rho_ir)))
+	return np.concatenate((Tau.calc_x_HI(ap,bp,cp,dp)[700:1410][::10], tau_model, np.log10(rho_uv), np.log10(rho_ir)))
