@@ -79,7 +79,7 @@ def niondot(z, f_esc=0.2, xi=10**53.14, ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
        capable of affecting the IGM.'''
 	return f_esc * xi * rho(z, ap=ap, bp=bp, cp=cp, dp=dp)/MPC3 #converting rhop to M_Sun yr^-1 cm^-3
 
-def trec(z, C_HII=3, Y_p=0.25, X_p=0.75, T_4=2): #1./ don't need __future__,
+def trec(z, C_HII=3, Y_p=0.2453, X_p=0.75, T_4=2): #1./ don't need __future__,
 	'''The average recombination time in the IGM as a function of redshift.
 	   C_HII is the clumping factor, Yp is the primordial helium mass fraction,
 	   X_p is the primordial hydrogen mass fraction,
