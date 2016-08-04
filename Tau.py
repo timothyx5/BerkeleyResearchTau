@@ -139,8 +139,8 @@ def calc_tau_Q_rho(N=2001,zhigh=20,zlow=0,ap=0.01376, bp=3.26, cp=2.59, dp=5.68)
 	Q_adrian = Q[700:1410][::10]
 
 	# Calc & Match Robertson_z's Rho
-	rho_uv = rho(np.array(uv_z),ap=0.01376, bp=3.26, cp=2.59, dp=5.68)
-	rho_ir = rho(np.array(ir_z),ap=0.01376, bp=3.26, cp=2.59, dp=5.68)
+	rho_uv = rho(np.array(uv_z),ap=ap,bp=bp,cp=cp,dp=dp)
+	rho_ir = rho(np.array(ir_z),ap=ap,bp=bp,cp=cp,dp=dp)
 
 	return tau, Q, z, Q_adrian, rho_uv, rho_ir
 
