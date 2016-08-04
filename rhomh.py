@@ -30,6 +30,8 @@ class Metro_Hast(object):
 		alpha = []
 		for i in range(self.nwalkers):
 			alpha.append( self.f(*proposals[i]) / self.f(*self.walker_pos[i]) )
+		for i in range(nwalkers):
+			if np.isnan( self.f(*proposals[i]) ) == True: continue
 
 		# Iterate through walkers
 		for i in range(self.nwalkers):
