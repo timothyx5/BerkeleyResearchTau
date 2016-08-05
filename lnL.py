@@ -11,13 +11,9 @@ x_HI_error = np.zeros(len(n['nf0']))
 for i in range(len(n['nf0'])):
 	x_HI_error[i] = 0.5*np.mean(n['upperCurve95'][i] - n['nf0'][i])
 
-rho_uv_y_error = [ 0.06, 0.05, 0.12, 0.22, 0.22, 0.09, 0.18, 0.12, 0.10, 0.10, 
-				   0.09, 0.09, 0.12, 0.29, 0.21, 0.27, 0.08, 0.12, 0.09, 0.10,
-				   0.13, 0.05, 0.06, 0.08, 0.10, 0.11, 0.11, 0.14 ]
+rho_uv_y_error = (np.log10(Tau.uv_err_up) - np.log10(Tau.uv_err_low))*0.5
 
-rho_ir_y_error = [ 0.03, 0.20, 0.17, 0.17, 0.24, 0.19, 0.23, 0.09, 0.12, 0.17,
-				   0.16, 0.17, 0.10, 0.04, 0.05, 0.06, 0.06, 0.05, 0.04, 0.03,
-				   0.11, 0.19, 0.37 ]
+rho_ir_y_error = (np.log10(Tau.ir_err_up) - np.log10(Tau.ir_err_low))*0.5
 
 rho_SFR_error = np.concatenate((np.array(rho_uv_y_error), np.array(rho_ir_y_error)))
 
