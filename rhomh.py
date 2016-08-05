@@ -30,7 +30,7 @@ class Metro_Hast(object):
 		alpha = []
 		for i in range(self.nwalkers):
 			alpha.append( self.f(*proposals[i]) / self.f(*self.walker_pos[i]) )
-		for i in range(nwalkers):
+		for i in range(self.nwalkers):
 			if np.isnan( self.f(*proposals[i]) ) == True: continue
 
 		# Iterate through walkers
@@ -65,10 +65,10 @@ class Metro_Hast(object):
 dim				= 4												# Number of dimensions of parameter space
 
 
-param_bounds	= [ [ 0.0137 - 0.001*20, 0.0137 + 0.001*20],
-		    	    [ 3.26 - 0.21*20, 3.26 + 0.21*20],
-		    		[ 2.59 - 0.14*20, 2.59 + 0.14*20],
-		    		[ 5.68 - 0.19*20, 5.68 + 0.19*20] ]										# Parameter Space Bounds
+param_bounds	= [ [ 0.0137 - 0.001*10, 0.0137 + 0.001*10],
+		    	    [ 3.26 - 0.21*10, 3.26 + 0.21*10],
+		    		[ 2.59 - 0.14*10, 2.59 + 0.14*10],
+		    		[ 5.68 - 0.19*10, 5.68 + 0.19*10] ]										# Parameter Space Bounds
 
 def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	return -0.5*np.sum(((lnL.y - lnL.m(ap,bp,cp,dp))/lnL.sigma)**2) # Underlying distribution
@@ -76,7 +76,7 @@ def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 sigma_prop 		= np.array([0.001,0.3,0.2,0.5])
 cov_prop		= np.eye(dim)*sigma_prop
 mean_prop		= np.zeros(dim)
-prop 			= lambda num: stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,size=num).reshape(dim,num).T	# Proposal distribution
+prop 			= lambda num: np.absolute(stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,size=num).reshape(dim,num).T)	# Proposal distribution
 
 
 nwalkers		= 5 												# Number of walkers
