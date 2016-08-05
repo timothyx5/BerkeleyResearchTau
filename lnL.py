@@ -4,7 +4,7 @@ import Tau
 
 n = np.load('/Users/TJW/BerkeleyResearchTau/ionHist.npz')
 
-tau_adrian = np.array([0.066])
+tau_adrian = np.array([0.06001993]) # changed from 0.066 to fit Robertson params
 tau_adrian_error = np.array([0.012])
 
 x_HI_error = np.zeros(len(n['nf0']))
