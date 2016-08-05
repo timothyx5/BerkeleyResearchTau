@@ -90,7 +90,7 @@ variables = {'dim':dim,'param_bounds':param_bounds,'f':f,'prop':prop,'nwalkers':
 ## Initialize the class!
 MH = Metro_Hast(variables)
 
-N = 5000
+N = 1000
 for j in range(N):
 	# Propose!
 	proposals = MH.propose()
@@ -98,7 +98,7 @@ for j in range(N):
 	# Accept / Reject
 	MH.accept_reject(proposals)
 
-	if j % 100 == 0: print j 
+	if j % 10 == 0: print j 
         sys.stdout.flush()
 
 
