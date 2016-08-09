@@ -9,7 +9,7 @@ tau_adrian_error = np.array([0.012])
 
 x_HI_error = np.zeros(len(n['nf0']))
 for i in range(len(n['nf0'])):
-	x_HI_error[i] = 0.5*np.mean(n['upperCurve95'][i] - n['nf0'][i])
+	x_HI_error[i] = 0.5*np.mean(n['upperCurve95'][i] - n['lowerCurve95'][i])
 
 rho_uv_y_error = (np.log10(Tau.uv_err_up) - np.log10(Tau.uv_err_low))*0.5
 
