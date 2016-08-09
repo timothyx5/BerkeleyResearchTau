@@ -88,7 +88,7 @@ variables = {'dim':dim,'param_bounds':param_bounds,'f':f,'prop':prop,'nwalkers':
 ## Initialize the class!
 MH = Metro_Hast(variables)
 
-N = 5000
+N = 25000
 for j in range(N):
 	# Propose!
 	proposals = MH.propose()
