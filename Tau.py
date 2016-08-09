@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 
 '''
 Thomson Optical Depth
@@ -10,6 +11,7 @@ from __future__ import division
 from scipy import integrate
 from astropy.cosmology import Planck15 as cosmo
 import numpy as np
+import matplotlib.pyplot as plt 
 
 ###################################################
 ##########Constants and conversions################
@@ -91,10 +93,17 @@ def Qdot(z, Q, ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	   which is a dimensionless volume filling faction of ionized hydrogen'''
 	return niondot(z, ap=ap, bp=bp, cp=cp, dp=dp)/NH - Q/trec(z)
 
+zbuf, tbuf = None, None
+
 def calc_Q(N=2001,zlow=0,zhigh=20, ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
+	global zbuf, tbuf
 	z = np.linspace(zhigh,zlow,N)
-	t_Gyr = np.array(cosmo.age(z)) # In units of Gyr
-	t = t_Gyr*GYR_S # Time t in seconds
+	if zbuf is None or np.any(zbuf != z):
+		t_Gyr = np.array(cosmo.age(z)) # In units of Gyr
+		t = t_Gyr*GYR_S # Time t in seconds
+		zbuf, tbuf = z, t
+	else:
+		z, t = zbuf, tbuf
 	Q = np.zeros(N)
 	dt = np.zeros(N)
 	Qprev = np.zeros(N)
@@ -110,14 +119,14 @@ def calc_Q(N=2001,zlow=0,zhigh=20, ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	return Q, z
 
 def get_Q(redshift,N=2001,zlow=0,zhigh=20):
-	Q, z = calc_Q(N=N,zlow=zlow,zhigh=zhigh)
+	Q = calc_Q(z)
 	index = np.where(z ==  redshift)
 	return Q[index]
 
 def f_e(z):
 	#f_e is not f_esc, it is free electrons per hydrogen nucleus, 1+ y/2x for z <= 4, and 1+ y/4x else.
-	low_z = z <= 4
-	electron_frac = np.ones(len(z))*1.083
+	low_z = np.where(z <= 4)
+	electron_frac = np.ones(z.size)*1.083
 	electron_frac[low_z] = 1.167
 	return electron_frac
 
@@ -127,10 +136,10 @@ def dtau(z, Q):
 	return (c * NH * SIGMA_T * f_e(z) * Q * (1 + z)**2)/(cosmo.H(z)/KM_PER_MPC)
 
 # tau is the result of integrating dtau over redshift z
-def calc_tau_Q_rho(N=2001,zhigh=20,zlow=0,ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
+def calc_tau_Q_rho(N=2001,zhigh=20,zlow=0, ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 
 	# Calculate Q (we get rho for free)
-	Q, z = calc_Q(N=2001,zhigh=20,zlow=0,ap=ap,bp=bp,cp=cp,dp=dp)
+	Q, z = calc_Q(ap=ap,bp=bp,cp=cp,dp=dp)
 
 	# Integrate Q to get Tau
 	tau = integrate.cumtrapz(dtau(z, Q)[::-1], z[::-1])[::-1]
@@ -145,7 +154,7 @@ def calc_tau_Q_rho(N=2001,zhigh=20,zlow=0,ap=0.01376, bp=3.26, cp=2.59, dp=5.68)
 	return tau, Q, z, Q_adrian, rho_uv, rho_ir
 
 def calc_x_HI(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
-	Q, z = calc_Q(N=2001,zhigh=20,zlow=0,ap=ap,bp=bp,cp=cp,dp=dp)
+	Q, z = calc_Q(ap=ap,bp=bp,cp=cp,dp=dp)
 	return np.ones(len(Q)) - Q
 
 tau, Q, z, Q_adrian, rho_uv, rho_ir = calc_tau_Q_rho()
