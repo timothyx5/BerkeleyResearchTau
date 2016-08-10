@@ -41,14 +41,14 @@ class Metro_Hast(object):
 			# If within bounds, continue
 			if within_bounds == True:
 				# Accept or reject based on alpha
-				if alpha[i] <= 1:
+				if alpha[i] >= 1:
 					self.walker_chain[i].append(1*self.walker_pos[i])
 					self.walker_pos[i] = proposals[i]
 				else:
 					# Probabilistic acceptance even if alpha is > 1
 					prob = alpha[i]
 					rand_num = rd.random()
-					if rand_num > prob:
+					if rand_num < prob:
 						self.walker_chain[i].append(1*self.walker_pos[i])
 						self.walker_pos[i] = proposals[i]
 					else:
