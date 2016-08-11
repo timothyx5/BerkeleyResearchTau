@@ -98,6 +98,7 @@ for j in range(N):
 	MH.accept_reject(proposals)
 
 	if j % 10 == 0: print j
+	sys.stdout.flush()
 	
 chain = np.array([ np.array(MH.walker_chain[i]) for i in range(nwalkers) ])
 
