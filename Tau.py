@@ -8,7 +8,7 @@ from __future__ import division
 from scipy import integrate
 from astropy.cosmology import Planck15 as cosmo
 import numpy as np
-import matplotlib.pyplot as plt 
+
 
 ###################################################
 ##########Constants and conversions################
