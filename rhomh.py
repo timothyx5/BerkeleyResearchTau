@@ -10,7 +10,6 @@ import numpy as np
 import numpy.random as rd
 import scipy.stats as stats
 import numpy.linalg as la
-import matplotlib.pyplot as plt
 import Tau
 import lnL
 
