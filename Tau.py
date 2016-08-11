@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Thomson Optical Depth
 
@@ -10,6 +8,7 @@ from __future__ import division
 from scipy import integrate
 from astropy.cosmology import Planck15 as cosmo
 import numpy as np
+import matplotlib.pyplot as plt 
 
 ###################################################
 ##########Constants and conversions################
@@ -68,94 +67,94 @@ ir_err_low = -ir_data * 10**-ir_err + ir_data
 
 def rho(z, ap=0.01376, bp=3.26, cp=2.59, dp=5.68): #Planck2015
 #def rho(z, ap=0.01306, bp=3.66, cp=2.28, dp=5.29): #WMAP
-    '''rho(z) represents rhoSFR as a function of redshift,
-       returns star formation rate density in M_Sun yr^-1 Mpc^-3,
-       ap, bp, cp, and dp are the parameters of a ML fitting Planck's tau findings.'''
-    return ap * (((1 + z)**bp)/(1+((1 + z)/cp)**dp))
+	'''rho(z) represents rhoSFR as a function of redshift,
+	   returns star formation rate density in M_Sun yr^-1 Mpc^-3,
+	   ap, bp, cp, and dp are the parameters of a ML fitting Planck's tau findings.'''
+	return ap * (((1 + z)**bp)/(1+((1 + z)/cp)**dp))
 
 def niondot(z, f_esc=0.2, xi=10**53.14, ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
-    '''niondot describes the number density of Lymann continuum photonsper second
+	'''niondot describes the number density of Lymann continuum photonsper second
        capable of reionizing intergalactic hydrogen,
        xi is the (photons/s) per (M_Sun/yr)
        and f is a fiducial value for the fraction of photons escaping from galaxies
        capable of affecting the IGM.'''
-    return f_esc * xi * rho(z, ap=ap, bp=bp, cp=cp, dp=dp)/MPC3 #converting rhop to M_Sun yr^-1 cm^-3
+	return f_esc * xi * rho(z, ap=ap, bp=bp, cp=cp, dp=dp)/MPC3 #converting rhop to M_Sun yr^-1 cm^-3
 
 def trec(z, C_HII=3, Y_p=0.2453, X_p=0.75, T_4=2): #1./ don't need __future__,
-    '''The average recombination time in the IGM as a function of redshift.
-       C_HII is the clumping factor, Yp is the primordial helium mass fraction,
-       X_p is the primordial hydrogen mass fraction,
-       and T_4 is a scaled temperature divided by 10^4(K) Osterbrock & Ferland 2006''' 
-    return 1/(C_HII * ALPHA_B * T_4**-0.845 * (1 + Y_p/(4*X_p)) * NH * (1 + z)**3) 
+	'''The average recombination time in the IGM as a function of redshift.
+	   C_HII is the clumping factor, Yp is the primordial helium mass fraction,
+	   X_p is the primordial hydrogen mass fraction,
+	   and T_4 is a scaled temperature divided by 10^4(K) Osterbrock & Ferland 2006''' 
+	return 1/(C_HII * ALPHA_B * T_4**-0.845 * (1 + Y_p/(4*X_p)) * NH * (1 + z)**3) 
 
 def Qdot(z, Q, ap=0.01376, bp=3.26, cp=2.59, dp=5.68): 
-    '''Is a differential equation describing the time derivative of Q_HII(z)
-       which is a dimensionless volume filling faction of ionized hydrogen'''
-    return niondot(z, ap=ap, bp=bp, cp=cp, dp=dp)/NH - Q/trec(z)
+	'''Is a differential equation describing the time derivative of Q_HII(z)
+	   which is a dimensionless volume filling faction of ionized hydrogen'''
+	return niondot(z, ap=ap, bp=bp, cp=cp, dp=dp)/NH - Q/trec(z)
 
 zbuf, tbuf = None, None
 
 def calc_Q(N=2001,zlow=0,zhigh=20, ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
-    global zbuf, tbuf
-    z = np.linspace(zhigh,zlow,N)
-    if zbuf is None or np.any(zbuf != z):
-        t_Gyr = np.array(cosmo.age(z)) # In units of Gyr
-        t = t_Gyr*GYR_S # Time t in seconds
-        zbuf, tbuf = z, t
-    else:
-        z, t = zbuf, tbuf
-    Q = np.zeros(N)
-    dt = np.zeros(N)
-    Qprev = np.zeros(N)
-    Qdotprev = np.zeros(N)
-    '''Evolving the differential equation Qdot to solve for Q(z) using Euler's method'''
-    for i in xrange(1, N):
-        Qprev[i] = Q[i-1]
-        Qdotprev[i] = Qdot(z[i-1], Qprev[i], ap=ap, bp=bp, cp=cp, dp=dp)
-        dt[i] = t[i] - t[i-1]    
-        Q[i] = Qprev[i] + dt[i]*Qdotprev[i]
-        if Q[i] > 1.0:
-            Q[i] = 1.0
-    return Q, z
+	global zbuf, tbuf
+	z = np.linspace(zhigh,zlow,N)
+	if zbuf is None or np.any(zbuf != z):
+		t_Gyr = np.array(cosmo.age(z)) # In units of Gyr
+		t = t_Gyr*GYR_S # Time t in seconds
+		zbuf, tbuf = z, t
+	else:
+		z, t = zbuf, tbuf
+	Q = np.zeros(N)
+	dt = np.zeros(N)
+	Qprev = np.zeros(N)
+	Qdotprev = np.zeros(N)
+	'''Evolving the differential equation Qdot to solve for Q(z) using Euler's method'''
+	for i in xrange(1, N):
+		Qprev[i] = Q[i-1]
+		Qdotprev[i] = Qdot(z[i-1], Qprev[i], ap=ap, bp=bp, cp=cp, dp=dp)
+		dt[i] = t[i] - t[i-1]	
+		Q[i] = Qprev[i] + dt[i]*Qdotprev[i]
+		if Q[i] > 1.0:
+			Q[i] = 1.0
+	return Q, z
 
 def get_Q(redshift,N=2001,zlow=0,zhigh=20):
-    Q = calc_Q(z)
-    index = np.where(z ==  redshift)
-    return Q[index]
+	Q = calc_Q(z)
+	index = np.where(z ==  redshift)
+	return Q[index]
 
 def f_e(z):
-    #f_e is not f_esc, it is free electrons per hydrogen nucleus, 1+ y/2x for z <= 4, and 1+ y/4x else.
-    low_z = np.where(z <= 4)
-    electron_frac = np.ones(z.size)*1.083
-    electron_frac[low_z] = 1.167
-    return electron_frac
+	#f_e is not f_esc, it is free electrons per hydrogen nucleus, 1+ y/2x for z <= 4, and 1+ y/4x else.
+	low_z = np.where(z <= 4)
+	electron_frac = np.ones(z.size)*1.083
+	electron_frac[low_z] = 1.167
+	return electron_frac
 
 def dtau(z, Q):
-    '''taud(z) is the ThomsonOptical Depth differential that must be integrated over z.
-       The factor of'''
-    return (c * NH * SIGMA_T * f_e(z) * Q * (1 + z)**2)/(cosmo.H(z)/KM_PER_MPC)
+	'''taud(z) is the ThomsonOptical Depth differential that must be integrated over z.
+	   The factor of'''
+	return (c * NH * SIGMA_T * f_e(z) * Q * (1 + z)**2)/(cosmo.H(z)/KM_PER_MPC)
 
 # tau is the result of integrating dtau over redshift z
 def calc_tau_Q_rho(N=2001,zhigh=20,zlow=0, ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 
-    # Calculate Q (we get rho for free)
-    Q, z = calc_Q(ap=ap,bp=bp,cp=cp,dp=dp)
+	# Calculate Q (we get rho for free)
+	Q, z = calc_Q(ap=ap,bp=bp,cp=cp,dp=dp)
 
-    # Integrate Q to get Tau
-    tau = integrate.cumtrapz(dtau(z, Q)[::-1], z[::-1])[::-1]
+	# Integrate Q to get Tau
+	tau = integrate.cumtrapz(dtau(z, Q)[::-1], z[::-1])[::-1]
 
-    # Match Q
-    Q_adrian = Q[700:1410][::10]
+	# Match Q
+	Q_adrian = Q[700:1410][::10]
 
-    # Calc & Match Robertson_z's Rho
-    rho_uv = rho(np.array(uv_z),ap=ap,bp=bp,cp=cp,dp=dp)
-    rho_ir = rho(np.array(ir_z),ap=ap,bp=bp,cp=cp,dp=dp)
+	# Calc & Match Robertson_z's Rho
+	rho_uv = rho(np.array(uv_z),ap=ap,bp=bp,cp=cp,dp=dp)
+	rho_ir = rho(np.array(ir_z),ap=ap,bp=bp,cp=cp,dp=dp)
 
-    return tau, Q, z, Q_adrian, rho_uv, rho_ir
+	return tau, Q, z, Q_adrian, rho_uv, rho_ir
 
 def calc_x_HI(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
-    Q, z = calc_Q(ap=ap,bp=bp,cp=cp,dp=dp)
-    return np.ones(len(Q)) - Q
+	Q, z = calc_Q(ap=ap,bp=bp,cp=cp,dp=dp)
+	return np.ones(len(Q)) - Q
 
 tau, Q, z, Q_adrian, rho_uv, rho_ir = calc_tau_Q_rho()
 
