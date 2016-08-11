@@ -90,7 +90,7 @@ def tauplot(z, ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	tau, Q, z, Q_adrian, rho_uv, rho_ir = Tau.calc_tau_Q_rho(ap=ap,bp=bp,cp=cp,dp=dp)
 	return tau 
 
-N = 10000
+N = 25000
 for j in range(N):
 	# Propose!
 	proposals = MH.propose()
