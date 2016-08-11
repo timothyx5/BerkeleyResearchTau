@@ -10,10 +10,9 @@ import numpy as np
 import numpy.random as rd
 import scipy.stats as stats
 import numpy.linalg as la
+import matplotlib.pyplot as plt
 import Tau
 import lnL
-
-n = np.load('/Users/TJW/BerkeleyResearchTau/ionHist.npz')
 
 class Metro_Hast(object):
 
@@ -30,7 +29,6 @@ class Metro_Hast(object):
 		alpha = []
 		for i in range(self.nwalkers):
 			alpha.append( self.f(*proposals[i]) / self.f(*self.walker_pos[i]) )
-
 		# Iterate through walkers
 		for i in range(self.nwalkers):
 			# Check proposal is within parameter bound
@@ -66,18 +64,18 @@ dim				= 4												# Number of dimensions of parameter space
 param_bounds	= [ [ 0.0137 - 0.001*10, 0.0137 + 0.001*10],
 		    	    [ 3.26 - 0.21*10, 3.26 + 0.21*10],
 		    		[ 2.59 - 0.14*10, 2.59 + 0.14*10],
-		    		[ 5.68 - 0.19*10, 5.68 + 0.19*10] ]										# Parameter Space Bounds
+		    		[ 5.68 - 0.19*10, 5.68 + 0.19*10] ]							# Parameter Space Bounds
 
 def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	return -0.5*np.sum(((lnL.y - lnL.m(ap,bp,cp,dp))/lnL.sigma)**2) # Underlying distribution
 
-sigma_prop 		= np.array([0.001,0.3,0.2,0.5])
+sigma_prop 		= np.array([0.0001,0.03,0.02,0.05])
 cov_prop		= np.eye(dim)*sigma_prop
 mean_prop		= np.zeros(dim)
-prop 			= lambda num: np.absolute(stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,size=num).reshape(dim,num).T)	# Proposal distribution
+prop 			= lambda num: stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,size=num).reshape(dim,num).T	# Proposal distribution
 
 
-nwalkers		= 5 												# Number of walkers
+nwalkers		= 25 												# Number of walkers
 walker_pos 	    = np.array([np.array([0.01376, 3.26, 2.59, 5.68])*i for i in np.random.randint(75,125,nwalkers)/100.0])
 walker_chain	= [ [] for i in range(nwalkers) ]
 
@@ -88,7 +86,11 @@ variables = {'dim':dim,'param_bounds':param_bounds,'f':f,'prop':prop,'nwalkers':
 ## Initialize the class!
 MH = Metro_Hast(variables)
 
-N = 25000
+def tauplot(z, ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
+	tau, Q, z, Q_adrian, rho_uv, rho_ir = Tau.calc_tau_Q_rho(ap=ap,bp=bp,cp=cp,dp=dp)
+	return tau 
+
+N = 10000
 for j in range(N):
 	# Propose!
 	proposals = MH.propose()
@@ -96,10 +98,8 @@ for j in range(N):
 	# Accept / Reject
 	MH.accept_reject(proposals)
 
-	if j % 100 == 0: print j 
-        sys.stdout.flush()
-
-
+	if j % 10 == 0: print j
+	
 chain = np.array([ np.array(MH.walker_chain[i]) for i in range(nwalkers) ])
 
 ## Create master chain
@@ -109,5 +109,5 @@ for k in range(nwalkers):
 
 master_chain = np.array(master_chain)
 
-np.savez(sys.argv[1], master_chain=master_chain)
-np.savez(sys.argv[2], chain=chain)
+np.savez(mabest, master_chain=master_chain)
+np.savez(chbest, chain=chain)
