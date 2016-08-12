@@ -10,7 +10,6 @@ import numpy as np
 import numpy.random as rd
 import scipy.stats as stats
 import numpy.linalg as la
-import matplotlib.pyplot as plt
 import Tau
 import lnL
 
@@ -75,7 +74,7 @@ mean_prop		= np.zeros(dim)
 prop 			= lambda num: stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,size=num).reshape(dim,num).T	# Proposal distribution
 
 
-nwalkers		= 5 												# Number of walkers
+nwalkers		= 25 												# Number of walkers
 walker_pos 	    = np.array([np.array([0.01376, 3.26, 2.59, 5.68])*i for i in np.random.randint(75,125,nwalkers)/100.0])
 walker_chain	= [ [] for i in range(nwalkers) ]
 
