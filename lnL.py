@@ -3,7 +3,7 @@ import Tau
 
 n = np.load('/Users/TJW/BerkeleyResearchTau/ionHist.npz')
 
-tau_adrian = np.array([0.066])
+tau_adrian = np.array([tau[0]])
 tau_adrian_error = np.array([0.012])
 
 x_HI_error = np.zeros(len(n['nf0']))
@@ -12,7 +12,7 @@ for i in range(len(n['nf0'])):
 
 rho_SFR_err = np.concatenate((np.array(Tau.uv_err), np.array(Tau.ir_err)))
 
-y =  np.concatenate((n['nf0'], tau_adrian, np.array(np.log10(Tau.uv_data)), np.array(np.log10(Tau.ir_data))))
+y =  np.concatenate((np.ones(len(Tau.Q_adrian)) - Tau.Q_adrian, tau_adrian, np.array(np.log10(Tau.uv_data)), np.array(np.log10(Tau.ir_data))))
 
 sigma = np.concatenate((x_HI_error, tau_adrian_error, rho_SFR_err))
 
