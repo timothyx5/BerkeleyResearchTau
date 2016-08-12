@@ -105,5 +105,5 @@ for k in range(nwalkers):
 
 master_chain = np.array(master_chain)
 
-np.savez(mabest, master_chain=master_chain)
-np.savez(chbest, chain=chain)
+np.savez(sys.argv[1], master_chain=master_chain)
+np.savez(sys.argv[2], chain=chain)
