@@ -10,6 +10,7 @@ import numpy as np
 import numpy.random as rd
 import scipy.stats as stats
 import numpy.linalg as la
+import matplotlib.pyplot as plt
 import Tau
 import lnL
 
@@ -27,7 +28,7 @@ class Metro_Hast(object):
 		# Define Alpha, iterate over walkers
 		alpha = []
 		for i in range(self.nwalkers):
-			alpha.append( self.f(*proposals[i]) / self.f(*self.walker_pos[i]) )
+			alpha.append( self.f(*proposals[i]) - self.f(*self.walker_pos[i]) )
 		# Iterate through walkers
 		for i in range(self.nwalkers):
 			# Check proposal is within parameter bound
@@ -38,12 +39,12 @@ class Metro_Hast(object):
 			# If within bounds, continue
 			if within_bounds == True:
 				# Accept or reject based on alpha
-				if alpha[i] >= 1:
+				if alpha[i] >= 0:
 					self.walker_chain[i].append(1*self.walker_pos[i])
 					self.walker_pos[i] = proposals[i]
 				else:
 					# Probabilistic acceptance even if alpha is > 1
-					prob = alpha[i]
+					prob = np.exp(alpha[i])
 					rand_num = rd.random()
 					if rand_num < prob:
 						self.walker_chain[i].append(1*self.walker_pos[i])
@@ -60,21 +61,21 @@ class Metro_Hast(object):
 dim				= 4												# Number of dimensions of parameter space
 
 
-param_bounds	= [ [ 0.0137 - 0.001*10, 0.0137 + 0.001*10],
-		    	    [ 3.26 - 0.21*10, 3.26 + 0.21*10],
-		    		[ 2.59 - 0.14*10, 2.59 + 0.14*10],
-		    		[ 5.68 - 0.19*10, 5.68 + 0.19*10] ]							# Parameter Space Bounds
+param_bounds	= [ [ -1, 1],
+		    	    [ -6, 6],
+		    		[ -6, 6],
+		    		[ -10, 10] ]							# Parameter Space Bounds
 
 def f(ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
 	return -0.5*np.sum(((lnL.y - lnL.m(ap,bp,cp,dp))/lnL.sigma)**2) # Underlying distribution
 
-sigma_prop 		= np.array([0.0001,0.03,0.02,0.05])
+sigma_prop 		= np.array([0.0000005,0.00015,0.0002,0.000125]) #Best errors results np.array([0.000001,0.0003,0.0002,0.0005])
 cov_prop		= np.eye(dim)*sigma_prop
 mean_prop		= np.zeros(dim)
 prop 			= lambda num: stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,size=num).reshape(dim,num).T	# Proposal distribution
 
 
-nwalkers		= 25 												# Number of walkers
+nwalkers		= 5 												# Number of walkers
 walker_pos 	    = np.array([np.array([0.01376, 3.26, 2.59, 5.68])*i for i in np.random.randint(75,125,nwalkers)/100.0])
 walker_chain	= [ [] for i in range(nwalkers) ]
 
@@ -84,10 +85,6 @@ variables = {'dim':dim,'param_bounds':param_bounds,'f':f,'prop':prop,'nwalkers':
 
 ## Initialize the class!
 MH = Metro_Hast(variables)
-
-def tauplot(z, ap=0.01376, bp=3.26, cp=2.59, dp=5.68):
-	tau, Q, z, Q_adrian, rho_uv, rho_ir = Tau.calc_tau_Q_rho(ap=ap,bp=bp,cp=cp,dp=dp)
-	return tau 
 
 N = 25000
 for j in range(N):
