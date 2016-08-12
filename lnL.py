@@ -8,7 +8,7 @@ tau_adrian_error = np.array([0.012])
 
 x_HI_error = np.zeros(len(n['nf0']))
 for i in range(len(n['nf0'])):
-	x_HI_error[i] = 0.5*(n['upperCurve95'][i] - n['lowerCurve95'][i])
+	x_HI_error[i] = 0.5*np.mean(n['upperCurve95'][i] - n['nf0'][i])
 
 rho_SFR_err = np.concatenate((np.array(Tau.uv_err), np.array(Tau.ir_err)))
 
