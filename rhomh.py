@@ -74,7 +74,7 @@ mean_prop		= np.zeros(dim)
 prop 			= lambda num: stats.multivariate_normal.rvs(mean=mean_prop,cov=cov_prop,size=num).reshape(dim,num).T	# Proposal distribution
 
 
-nwalkers		= 25 												# Number of walkers
+nwalkers		= 15 												# Number of walkers
 walker_pos 	    = np.array([np.array([0.01376, 3.26, 2.59, 5.68])*i for i in np.random.randint(75,125,nwalkers)/100.0])
 walker_chain	= [ [] for i in range(nwalkers) ]
 
@@ -85,7 +85,7 @@ variables = {'dim':dim,'param_bounds':param_bounds,'f':f,'prop':prop,'nwalkers':
 ## Initialize the class!
 MH = Metro_Hast(variables)
 
-N = 25000
+N = 100000
 for j in range(N):
 	# Propose!
 	proposals = MH.propose()
@@ -93,7 +93,7 @@ for j in range(N):
 	# Accept / Reject
 	MH.accept_reject(proposals)
 
-	if j % 10 == 0: print j
+	if j % 100 == 0: print j
 	sys.stdout.flush()
 	
 chain = np.array([ np.array(MH.walker_chain[i]) for i in range(nwalkers) ])
